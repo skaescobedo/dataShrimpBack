@@ -1,0 +1,33 @@
+from datetime import date, datetime
+from decimal import Decimal
+
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class BiometriaBase(BaseModel):
+    id_ciclo_estanque: int
+    fecha: date
+    numero_muestra: int = Field(gt=0)
+    peso_total_muestra_g: Decimal = Field(gt=0)
+    observaciones: str | None = None
+
+
+class BiometriaCreate(BiometriaBase):
+    pass
+
+
+class BiometriaUpdate(BaseModel):
+    id_ciclo_estanque: int | None = None
+    fecha: date | None = None
+    numero_muestra: int | None = Field(default=None, gt=0)
+    peso_total_muestra_g: Decimal | None = Field(default=None, gt=0)
+    observaciones: str | None = None
+
+
+class BiometriaRead(BiometriaBase):
+    id_biometria: int
+    peso_promedio_g: Decimal
+    registrado_por: int
+    creado_en: datetime
+
+    model_config = ConfigDict(from_attributes=True)
