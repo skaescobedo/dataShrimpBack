@@ -9,6 +9,9 @@ class BiometriaBase(BaseModel):
     fecha: date
     numero_muestra: int = Field(gt=0)
     peso_total_muestra_g: Decimal = Field(gt=0)
+    agua_temperatura: Decimal = Field(gt=0)
+    agua_salinidad: Decimal = Field(gt=0)
+    agua_oxigeno: Decimal = Field(gt=0)
     observaciones: str | None = None
 
 
@@ -21,6 +24,9 @@ class BiometriaUpdate(BaseModel):
     fecha: date | None = None
     numero_muestra: int | None = Field(default=None, gt=0)
     peso_total_muestra_g: Decimal | None = Field(default=None, gt=0)
+    agua_temperatura: Decimal | None = Field(default=None, gt=0)
+    agua_salinidad: Decimal | None = Field(default=None, gt=0)
+    agua_oxigeno: Decimal | None = Field(default=None, gt=0)
     observaciones: str | None = None
 
 

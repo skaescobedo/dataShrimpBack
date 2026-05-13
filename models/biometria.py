@@ -28,6 +28,11 @@ class Biometria(Base):
     observaciones: Mapped[str | None] = mapped_column(Text, nullable=True)
     registrado_por: Mapped[int] = mapped_column(ForeignKey("usuarios.id_usuario"), nullable=False)
     creado_en: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    agua_temperatura: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False)
+    agua_salinidad: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False)
+    agua_oxigeno: Mapped[Decimal] = mapped_column(Numeric(5, 2), nullable=False)
+
+
 
     ciclo_estanque: Mapped["CicloEstanque"] = relationship("CicloEstanque", back_populates="biometrias")
     usuario: Mapped["Usuario"] = relationship("Usuario", back_populates="biometrias")
