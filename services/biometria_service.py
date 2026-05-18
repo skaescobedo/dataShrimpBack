@@ -200,7 +200,6 @@ async def processBiometriaFromExcel(db: Session, archive: UploadFile=File(...)) 
         ciclo_nombre = row[col_map["ciclo"]]
         estanque_nombre = row[col_map["estanque"]]
         
-        # Validar que ciclo y estanque existan y estén asociados
         ciclo_estanque = validate_ciclo_estanque_association(db, ciclo_nombre, estanque_nombre)
         
         register.append(BiometriaCreate(
@@ -311,8 +310,7 @@ def predict_biometria_global(db: Session, ciclo_estanque_id: int, semanas_futura
     temp_actual = float(ultima_biometria.agua_temperatura)
     sal_actual = float(ultima_biometria.agua_salinidad)
     ox_actual = float(ultima_biometria.agua_oxigeno)
-    
-    # Hacer predicciones
+
     predicciones = []
     for i in range(1, semanas_futuras + 1):
         numero_bio_futuro = numero_biometria_actual + i
