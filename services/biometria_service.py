@@ -22,8 +22,8 @@ def create_biometria(db: Session, payload: BiometriaCreate, usuario_id: int) -> 
     if payload.numero_muestra < 1 or payload.numero_muestra > 50000:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El número de muestra debe estar entre 1 y 50000")
 
-    if payload.peso_total_muestra_g < 1 or payload.peso_total_muestra_g > Decimal("10000"):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El peso total de la muestra debe estar entre 1 y 10000 g")
+    if payload.peso_total_muestra_g < Decimal("0.01") or payload.peso_total_muestra_g > Decimal("100000"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El peso total de la muestra debe estar entre 0.01 y 100000 g")
 
     if payload.agua_temperatura < 0 or payload.agua_temperatura > 60:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La temperatura del agua debe estar entre 0 y 60 °C")
@@ -77,8 +77,8 @@ def update_biometria(db: Session, biometria_id: int, payload: BiometriaUpdate) -
     if "numero_muestra" in data and (data["numero_muestra"] < 1 or data["numero_muestra"] > 50000):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El número de muestra debe estar entre 1 y 50000")
 
-    if "peso_total_muestra_g" in data and (data["peso_total_muestra_g"] < 1 or data["peso_total_muestra_g"] > Decimal("10000")):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El peso total de la muestra debe estar entre 1 y 10000 g")
+    if "peso_total_muestra_g" in data and (data["peso_total_muestra_g"] < Decimal("0.01") or data["peso_total_muestra_g"] > Decimal("100000")):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El peso total de la muestra debe estar entre 0.01 y 100000 g")
 
     if "agua_temperatura" in data and (data["agua_temperatura"] < 0 or data["agua_temperatura"] > 60):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La temperatura del agua debe estar entre 0 y 60 °C")
