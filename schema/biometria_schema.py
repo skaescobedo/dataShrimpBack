@@ -7,26 +7,33 @@ from pydantic import BaseModel, ConfigDict, Field
 class BiometriaBase(BaseModel):
     id_ciclo_estanque: int
     fecha: date
-    numero_muestra: int = Field(gt=0)
-    peso_total_muestra_g: Decimal = Field(gt=0)
-    agua_temperatura: Decimal = Field(gt=0)
-    agua_salinidad: Decimal = Field(gt=0)
-    agua_oxigeno: Decimal = Field(gt=0)
+    numero_muestra: int
+    peso_total_muestra_g: Decimal
+    agua_temperatura: Decimal
+    agua_salinidad: Decimal
+    agua_oxigeno: Decimal
     observaciones: str | None = None
 
 
-class BiometriaCreate(BiometriaBase):
-    pass
+class BiometriaCreate(BaseModel):
+    id_ciclo_estanque: int
+    fecha: date
+    numero_muestra: int
+    peso_total_muestra_g: Decimal
+    agua_temperatura: Decimal
+    agua_salinidad: Decimal
+    agua_oxigeno: Decimal
+    observaciones: str | None = None
 
 
 class BiometriaUpdate(BaseModel):
     id_ciclo_estanque: int | None = None
     fecha: date | None = None
-    numero_muestra: int | None = Field(default=None, gt=0)
-    peso_total_muestra_g: Decimal | None = Field(default=None, gt=0)
-    agua_temperatura: Decimal | None = Field(default=None, gt=0)
-    agua_salinidad: Decimal | None = Field(default=None, gt=0)
-    agua_oxigeno: Decimal | None = Field(default=None, gt=0)
+    numero_muestra: int | None = None
+    peso_total_muestra_g: Decimal | None = None
+    agua_temperatura: Decimal | None = None
+    agua_salinidad: Decimal | None = None
+    agua_oxigeno: Decimal | None = None
     observaciones: str | None = None
 
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api import auth, biometrias, ciclo_estanques, ciclos, estanques, usuarios
+from api import auth, biometrias, ciclo_estanques, ciclos, estanques, usuarios, analytics
 
 
 api_router = APIRouter()
@@ -10,3 +10,4 @@ api_router.include_router(estanques.router)
 api_router.include_router(ciclos.router)
 api_router.include_router(ciclo_estanques.router)
 api_router.include_router(biometrias.router)
+api_router.include_router(analytics.router)

@@ -38,6 +38,21 @@ def create_biometria(db: Session, payload: BiometriaCreate, usuario_id: int) -> 
     if not db.get(CicloEstanque, payload.id_ciclo_estanque):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ciclo estanque no encontrado")
 
+    if payload.numero_muestra < 1 or payload.numero_muestra > 50000:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El número de muestra debe estar entre 1 y 50000")
+
+    if payload.peso_total_muestra_g < 1 or payload.peso_total_muestra_g > Decimal("10000"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El peso total de la muestra debe estar entre 1 y 10000 g")
+
+    if payload.agua_temperatura < 0 or payload.agua_temperatura > 60:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La temperatura del agua debe estar entre 0 y 60 °C")
+
+    if payload.agua_salinidad < 0 or payload.agua_salinidad > 100:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La salinidad del agua debe estar entre 0 y 100 ppt")
+
+    if payload.agua_oxigeno < 0 or payload.agua_oxigeno > 40:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El oxígeno disuelto debe estar entre 0 y 40 mg/L")
+
     peso_promedio = _calcular_peso_promedio(payload.peso_total_muestra_g, payload.numero_muestra)
     biometria = Biometria(
         **payload.model_dump(),
@@ -77,6 +92,21 @@ def update_biometria(db: Session, biometria_id: int, payload: BiometriaUpdate) -
 
     if "id_ciclo_estanque" in data and not db.get(CicloEstanque, data["id_ciclo_estanque"]):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ciclo estanque no encontrado")
+
+    if "numero_muestra" in data and (data["numero_muestra"] < 1 or data["numero_muestra"] > 50000):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El número de muestra debe estar entre 1 y 50000")
+
+    if "peso_total_muestra_g" in data and (data["peso_total_muestra_g"] < 1 or data["peso_total_muestra_g"] > Decimal("10000")):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El peso total de la muestra debe estar entre 1 y 10000 g")
+
+    if "agua_temperatura" in data and (data["agua_temperatura"] < 0 or data["agua_temperatura"] > 60):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La temperatura del agua debe estar entre 0 y 60 °C")
+
+    if "agua_salinidad" in data and (data["agua_salinidad"] < 0 or data["agua_salinidad"] > 100):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La salinidad del agua debe estar entre 0 y 100 ppt")
+
+    if "agua_oxigeno" in data and (data["agua_oxigeno"] < 0 or data["agua_oxigeno"] > 40):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El oxígeno disuelto debe estar entre 0 y 40 mg/L")
 
     numero_muestra = data.get("numero_muestra", biometria.numero_muestra)
     peso_total_muestra_g = data.get("peso_total_muestra_g", biometria.peso_total_muestra_g)

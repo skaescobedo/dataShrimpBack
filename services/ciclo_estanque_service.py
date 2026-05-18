@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -14,6 +16,12 @@ def create_ciclo_estanque(db: Session, payload: CicloEstanqueCreate) -> CicloEst
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ciclo no encontrado")
     if not db.get(Estanque, payload.id_estanque):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Estanque no encontrado")
+
+    if payload.densidad_inicial_m2 < Decimal("1") or payload.densidad_inicial_m2 > Decimal("500"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La densidad inicial debe estar entre 1 y 500 org/m²")
+
+    if payload.peso_inicial_promedio_g is not None and (payload.peso_inicial_promedio_g < Decimal("0.01") or payload.peso_inicial_promedio_g > Decimal("10")):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El peso inicial promedio debe estar entre 0.01 y 10 g")
 
     ciclo_estanque = CicloEstanque(**payload.model_dump())
     db.add(ciclo_estanque)
@@ -61,7 +69,15 @@ def update_ciclo_estanque(
     db: Session, ciclo_estanque_id: int, payload: CicloEstanqueUpdate
 ) -> CicloEstanque:
     ciclo_estanque = get_ciclo_estanque_or_404(db, ciclo_estanque_id)
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    data = payload.model_dump(exclude_unset=True)
+
+    if "densidad_inicial_m2" in data and (data["densidad_inicial_m2"] < Decimal("1") or data["densidad_inicial_m2"] > Decimal("500")):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La densidad inicial debe estar entre 1 y 500 org/m²")
+
+    if "peso_inicial_promedio_g" in data and data["peso_inicial_promedio_g"] is not None and (data["peso_inicial_promedio_g"] < Decimal("0.01") or data["peso_inicial_promedio_g"] > Decimal("10")):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El peso inicial promedio debe estar entre 0.01 y 10 g")
+
+    for field, value in data.items():
         setattr(ciclo_estanque, field, value)
     db.commit()
     db.refresh(ciclo_estanque)
