@@ -44,3 +44,23 @@ class BiometriaRead(BiometriaBase):
     creado_en: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class BiometriaPredictionRecord(BaseModel):
+    numero_biometria: int
+    fecha: date
+    peso_promedio_predicho: float
+    agua_temperatura_predicha: float
+    agua_salinidad_predicha: float
+    agua_oxigeno_predicho: float
+    confianza: float
+
+
+class BiometriaPredictionResponse(BaseModel):
+    ciclo_nombre: str
+    estanque_nombre: str
+    numero_biometria_actual: int
+    fecha_siembra: date
+    predicciones: list[BiometriaPredictionRecord]
+    r2_modelo: float
+    cantidad_datos_entrenamiento: int
