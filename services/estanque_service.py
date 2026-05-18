@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
@@ -7,6 +9,9 @@ from schema.estanque_schema import EstanqueCreate, EstanqueUpdate
 
 
 def create_estanque(db: Session, payload: EstanqueCreate) -> Estanque:
+    if payload.superficie_m2 < 1 or payload.superficie_m2 > Decimal("100000"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La superficie debe estar entre 1 y 100000 m²")
+
     estanque = Estanque(**payload.model_dump())
     db.add(estanque)
     db.commit()
@@ -27,7 +32,12 @@ def get_estanque_or_404(db: Session, estanque_id: int) -> Estanque:
 
 def update_estanque(db: Session, estanque_id: int, payload: EstanqueUpdate) -> Estanque:
     estanque = get_estanque_or_404(db, estanque_id)
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    data = payload.model_dump(exclude_unset=True)
+
+    if "superficie_m2" in data and (data["superficie_m2"] < 1 or data["superficie_m2"] > Decimal("100000")):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La superficie debe estar entre 1 y 100000 m²")
+
+    for field, value in data.items():
         setattr(estanque, field, value)
     db.commit()
     db.refresh(estanque)
